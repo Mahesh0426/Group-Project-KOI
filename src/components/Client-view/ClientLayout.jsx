@@ -8,7 +8,7 @@ const StudentLayout = () => {
     <div>
       <Header />
 
-      <div className="pt-16">
+      <div>
         <Outlet />
       </div>
       <Footer />
