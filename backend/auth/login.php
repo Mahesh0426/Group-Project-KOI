@@ -13,14 +13,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($user && password_verify($password, $user['password'])) {
+             $tokenPayload = [
+                'id' => $user['id'],
+                'username' => $user['username'],
+                'email' => $user['email'],
+                'role' => $user['role']
+            ];
+
+            // Generate JWT
+            $jwt = generateJWT($tokenPayload);
+            
             echo json_encode([
                 'message' => 'Login successful',
+                'access_token' => $jwt,
                 'user' => [
                     'id' => $user['id'],
                     'username' => $user['username'],
-                    'email' => $user['email']
+                    'email' => $user['email'],
+                    'role' => $user['role']
                 ]
             ]);
+
         } else {
             http_response_code(401);
             echo json_encode(['error' => 'Invalid credentials']);
