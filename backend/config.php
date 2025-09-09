@@ -1,12 +1,18 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Content-Disposition");
+header("Access-Control-Expose-Headers: Content-Disposition");
 
 define('JWT_SECRET', '34761eb2-ae47-472c-98b3-949966e6d568');
 define('JWT_ALGORITHM', 'HS256');
+
+// File upload settings
+define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
+define('UPLOAD_DIR', 'uploads/');
+define('ALLOWED_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
 $host = 'localhost';
 $dbname = 'stem_db';
@@ -99,6 +105,47 @@ function getBearerToken() {
     }
     
     return null;
+}
+
+// File upload validation
+function validateFile($file) {
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        return ['error' => 'File upload failed with error code: ' . $file['error']];
+    }
+    
+    if ($file['size'] > MAX_FILE_SIZE) {
+        return ['error' => 'File size exceeds maximum limit of 5MB'];
+    }
+    
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime_type = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+    
+    if (!in_array($mime_type, ALLOWED_TYPES)) {
+        return ['error' => 'Invalid file type. Allowed types: JPEG, PNG, GIF, WebP'];
+    }
+    
+    return ['success' => true, 'mime_type' => $mime_type];
+}
+
+function generateFilename($original_name, $mime_type) {
+    $extension = pathinfo($original_name, PATHINFO_EXTENSION);
+    
+    if (!$extension) {
+        $mime_map = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp'
+        ];
+        $extension = $mime_map[$mime_type] ?? 'bin';
+    }
+    
+    return uniqid() . '_' . time() . '.' . $extension;
+}
+
+if (!file_exists(UPLOAD_DIR)) {
+    mkdir(UPLOAD_DIR, 0777, true);
 }
 
 require_once 'vendor/autoload.php';
