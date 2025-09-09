@@ -1,6 +1,8 @@
+-- Crate a new dabase if it's not already exits
 CREATE DATABASE stem_db;
-USE stem_db;
 
+-- Query for creating users table
+USE stem_db;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
