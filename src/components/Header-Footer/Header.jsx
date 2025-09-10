@@ -161,20 +161,22 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-8 font-semibold relative z-10">
-          {["home", "about", "programs", "gallery", "contact"].map((item) => (
-            <li key={item}>
-              <Link
-                to={item === "home" ? "/" : `/${item}`}
-                className={`px-4 py-2 rounded-full transition ${
-                  isScrolled
-                    ? "hover:bg-black/10 text-black"
-                    : "hover:bg-white/20 text-white"
-                }`}
-              >
-                {item}
-              </Link>
-            </li>
-          ))}
+          {["home", "about", "programs", "gallery", "contact", "login"].map(
+            (item) => (
+              <li key={item}>
+                <Link
+                  to={item === "home" ? "/" : `/${item}`}
+                  className={`px-4 py-2 rounded-full transition ${
+                    isScrolled
+                      ? "hover:bg-black/10 text-black"
+                      : "hover:bg-white/20 text-white"
+                  }`}
+                >
+                  {item}
+                </Link>
+              </li>
+            )
+          )}
         </ul>
 
         {/* Hamburger Menu */}
@@ -201,67 +203,26 @@ const Header = () => {
           }`}
         >
           <ul className="flex flex-col space-y-4 font-semibold">
-            {["home", "about", "programs", "gallery", "contact"].map((item) => (
-              <li key={item}>
-                <Link
-                  to={item === "home" ? "/" : `/${item}`}
-                  className={`px-4 py-2 rounded-full transition ${
-                    isScrolled
-                      ? "hover:bg-black/10 text-black"
-                      : "hover:bg-white/20 text-white"
-                  }`}
-                  onClick={() => setIsOpen(false)} // Close mobile menu on click
-                >
-                  {item}
-                </Link>
-              </li>
-            ))}
+            {["home", "about", "programs", "gallery", "contact", "login"].map(
+              (item) => (
+                <li key={item}>
+                  <Link
+                    to={item === "home" ? "/" : `/${item}`}
+                    className={`px-4 py-2 rounded-full transition ${
+                      isScrolled
+                        ? "hover:bg-black/10 text-black"
+                        : "hover:bg-white/20 text-white"
+                    }`}
+                    onClick={() => setIsOpen(false)} // Close mobile menu on click
+                  >
+                    {item}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </div>
       )}
-
-      {/* Liquid glass animation */}
-      <style jsx>{`
-        @keyframes liquidGlass {
-          0% {
-            border-radius: 24px;
-            background-position: 0% 50%;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
-              inset 0 0 20px rgba(255, 255, 255, 0.1);
-          }
-          25% {
-            border-radius: 26px 24px 24px 26px;
-            background-position: 50% 50%;
-          }
-          50% {
-            border-radius: 24px 26px 26px 24px;
-            background-position: 100% 50%;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3),
-              inset 0 0 15px rgba(255, 255, 255, 0.2);
-          }
-          75% {
-            border-radius: 24px;
-            background-position: 50% 50%;
-          }
-          100% {
-            border-radius: 24px;
-            background-position: 0% 50%;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
-              inset 0 0 20px rgba(255, 255, 255, 0.1);
-          }
-        }
-        .animate-liquidGlass {
-          animation: liquidGlass 8s ease-in-out infinite;
-          background: linear-gradient(
-            270deg,
-            rgba(255, 255, 255, 0.1),
-            rgba(255, 255, 255, 0.2),
-            rgba(255, 255, 255, 0.1)
-          );
-          background-size: 200% 200%;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-      `}</style>
     </header>
   );
 };

@@ -1,20 +1,21 @@
-import { Mail, Lock, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CustomInput from "../../components/custom-input/CustomInput";
-import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
+import { useNavigate } from "react-router-dom";
+import useLoading from "../../hooks/useLoading";
+import { toast } from "react-toastify";
+import { createUser } from "../../axios/authaxios";
 import LoadingSpinner from "../../components/helper/LoadingSpinner";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUserAction } from "../../redux/auth/userAction";
+import { Mail, User, Lock } from "lucide-react";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { formData, handleOnChange, setFormData } = useForm({
+    name: "",
     email: "",
     password: "",
   });
-
+  const { isLoading, startLoading, stopLoading } = useLoading();
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
@@ -23,47 +24,34 @@ const LoginPage = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "Email is required";
     if (!formData.password) newErrors.password = "Password is required";
+    if (!formData.name) newErrors.name = "Name is required";
 
     setErrors(newErrors);
-    dispatch(loginUserAction(formData));
-    setFormData({ email: "", password: "" });
 
-    // if (Object.keys(newErrors).length === 0) {
-    //   try {
-    //     startLoading();
-    //     const result = await loginUser(formData);
-    //     console.log("Login response:", result);
-    //     if (
-    //       result &&
-    //       (result.success === true || result.status === "success")
-    //     ) {
-    //       toast.success("Login successful!");
-    //       setFormData({ email: "", password: "" });
-    //       navigate("/");
-    //     } else {
-    //       const message = result?.message || "Login failed";
-    //       toast.error(message);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error during authentication:", error);
-    //     toast.error("Network or server error occurred. Please try again.");
-    //   }
-
-    // }
-  };
-  // Logic For redirecting after login
-  const { isAuthenticated, user, isLoading } = useSelector(
-    (state) => state.user
-  );
-
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("user:", user);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        startLoading();
+        const result = await createUser(formData);
+        console.log("Signup response:", result);
+        if (
+          result &&
+          (result.success === true || result.status === "success")
+        ) {
+          toast.success("Signup successful! Please log in.");
+          setFormData({ name: "", email: "", password: "" });
+          navigate("/login");
+        } else {
+          const message = result?.message || "Signup failed";
+          toast.error(message);
+        }
+      } catch (error) {
+        console.error("Signup error:", error);
+        toast.error("An error occurred during signup. Please try again.");
+      } finally {
+        stopLoading();
+      }
     }
-  }, [isAuthenticated, navigate]);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -76,19 +64,30 @@ const LoginPage = () => {
             math. Join our STEM journey today!
           </p>
           <button
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/login")}
             className="self-start px-6 py-3 bg-white text-blue-500 font-semibold rounded-xl hover:shadow-lg transition duration-300"
           >
-            Create an Account
+            already have an account
           </button>
         </div>
 
         {/* Right Side - Form */}
         <div className="lg:w-1/2 p-10 flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-blue-900 mb-6">
-            Login to your account
+            Sign up for STEM Club
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <CustomInput
+              label="Full Name"
+              name="name"
+              type="text"
+              placeholder="Enter your full name"
+              icon={<User className="w-5 h-5 text-gray-400" />}
+              value={formData.name}
+              onChange={handleOnChange}
+              error={errors.name}
+            />
+
             <CustomInput
               label="Email Address"
               name="email"
@@ -115,16 +114,16 @@ const LoginPage = () => {
               disabled={isLoading}
               className="w-full bg-gradient-to-tr from-blue-400 to-cyan-400 text-white font-semibold py-3 rounded-xl hover:shadow-lg transition duration-300"
             >
-              {isLoading ? <LoadingSpinner /> : "Login"}
+              {isLoading ? <LoadingSpinner /> : "Sign Up"}
             </button>
           </form>
-          <p className="mt-3 text-center text-sm text-gray-500">
-            Don't have an account?
+          <p className="mt-8 text-center text-sm text-gray-500">
+            Already have Account?
             <a
-              href="/signup"
+              href="/login"
               className="ml-2 font-semibold text-cyan-600 hover:text-cyan-500"
             >
-              Sign up
+              Login
             </a>
           </p>
         </div>
@@ -133,4 +132,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
