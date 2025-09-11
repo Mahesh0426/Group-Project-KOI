@@ -11,6 +11,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const features = [
@@ -47,7 +48,7 @@ const HomePage = () => {
         "Build and program your own robots while learning fundamental coding concepts.",
       image: "src/assets/robots and coding.png",
       alt: "Children building and programming robots",
-      link: "programs.html#robotics",
+      link: "/programs#robotics",
     },
     {
       title: "Chemistry Lab",
@@ -55,7 +56,7 @@ const HomePage = () => {
         "Discover the wonders of chemistry through safe, exciting experiments.",
       image: "src/assets/chemistryLab.png",
       alt: "Kids conducting chemistry experiments with colorful reactions",
-      link: "programs.html#chemistry",
+      link: "/programs#chemistry",
     },
     {
       title: "Engineering Design",
@@ -63,7 +64,7 @@ const HomePage = () => {
         "Design, build, and test structures while learning engineering principles.",
       image: "src/assets/engineer Design.png",
       alt: "Children designing and building engineering structures",
-      link: "programs.html#engineering",
+      link: "/programs#engineering",
     },
   ];
 
@@ -102,45 +103,7 @@ const HomePage = () => {
   return (
     <main>
       {/* Hero section */}
-      {/* <section className="bg-gradient-to-br from-pink-300 via-pink-500 to-rose-500 py-16 min-h-[70vh] flex items-center">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              Welcome to STEM Explorers Club!
-            </h2>
-            <p className="text-white text-lg md:text-xl mb-6 leading-relaxed">
-              Igniting curiosity and creativity through hands-on STEM learning
-              experiences for children aged 8-14. Join us on an exciting journey
-              of discovery, experimentation, and innovation!
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button
-                asChild
-                className="rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg hover:shadow-xl transition-transform hover:-translate-y-1"
-              >
-                <a href="programs.html" className="flex items-center gap-2">
-                  Explore Programs <ArrowRight className="h-4 w-4" />
-                </a>
-              </Button>
 
-              <Button
-                asChild
-                className="rounded-full border-2 border-white text-white bg-transparent hover:bg-transparent hover:text-white hover:border-gray-200 transition-transform hover:-translate-y-1"
-              >
-                <a href="contact.html">Join Today</a>
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <img
-              src="src/assets/hero.png"
-              alt="Children conducting science experiments with colorful chemicals and lab equipment"
-              className="w-full max-w-md rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        </div>
-      </section> */}
       <section className="relative min-h-[80vh] flex items-center justify-center text-center">
         {/* Background image */}
         <div
@@ -166,16 +129,16 @@ const HomePage = () => {
               asChild
               className="rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg hover:shadow-xl transition-transform hover:-translate-y-1"
             >
-              <a href="programs.html" className="flex items-center gap-2">
+              <Link to="/programs" className="flex items-center gap-2">
                 Explore Programs <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </Button>
 
             <Button
               asChild
               className="rounded-full border-2 border-white text-white bg-transparent hover:border-gray-200 transition-transform hover:-translate-y-1"
             >
-              <a href="contact.html">Join Today</a>
+              <Link to="/login">Join Today</Link>
             </Button>
           </div>
         </div>
@@ -235,12 +198,12 @@ const HomePage = () => {
                     {program.title}
                   </h3>
                   <p className="text-slate-600">{program.description}</p>
-                  <a
-                    href={program.link}
+                  <Link
+                    to={program.link}
                     className="inline-flex items-center gap-2 text-blue-500 font-semibold mt-4 transition-transform hover:translate-x-1"
                   >
                     Learn More <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

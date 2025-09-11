@@ -60,10 +60,17 @@ const LoginPage = () => {
   console.log("user:", user);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
+    if (user?.id) {
+      switch (user.role) {
+        case "admin":
+          navigate("/admin");
+          break;
+        case "user":
+          navigate("/");
+          break;
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [user?.id, user?.role, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -98,6 +105,7 @@ const LoginPage = () => {
               value={formData.email}
               onChange={handleOnChange}
               error={errors.email}
+              autoComplete="current-email"
             />
             <CustomInput
               label="Password"
@@ -108,6 +116,7 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleOnChange}
               error={errors.password}
+              autoComplete="current-password"
             />
 
             <button

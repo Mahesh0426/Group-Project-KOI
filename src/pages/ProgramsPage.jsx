@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const ProgramsPage = () => {
   const programs = [
@@ -221,7 +222,7 @@ const ProgramsPage = () => {
               asChild
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
-              <a href="contact.html">Contact Us to Enroll</a>
+              <Link to="/contact">Contact Us to Enroll</Link>
             </Button>
           </Card>
         </div>

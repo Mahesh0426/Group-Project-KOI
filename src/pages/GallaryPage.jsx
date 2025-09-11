@@ -194,9 +194,6 @@ const GallaryPage = () => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Play className="w-12 h-12 text-white bg-black/70 rounded-full p-2 hover:scale-110 transition-transform duration-300" />
-                </div>
               </div>
               <div className="p-4">
                 <h3 className="text-blue-700 text-lg font-semibold">

@@ -10,7 +10,6 @@ export const loginUserAction = (userObject) => async (dispatch) => {
     // call axios
     dispatch(setIsLoading(true));
     const result = await loginUser(userObject);
-    console.log("Login response:", result);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));

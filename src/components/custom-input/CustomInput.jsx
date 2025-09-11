@@ -7,6 +7,7 @@ const CustomInput = ({
   value,
   onChange,
   error,
+  autoComplete,
 }) => (
   <div className="flex flex-col">
     <label className="font-semibold text-gray-700 mb-1">{label}</label>
@@ -20,6 +21,7 @@ const CustomInput = ({
         value={value}
         placeholder={placeholder}
         onChange={onChange}
+        autoComplete={autoComplete}
         className={`w-full p-3 pl-10 border-2 rounded-lg border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-200 outline-none transition`}
       />
     </div>

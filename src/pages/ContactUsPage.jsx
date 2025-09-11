@@ -85,7 +85,7 @@ const ContactUsPage = () => {
               <ContactItem
                 icon={<MapPin className="w-6 h-6 text-blue-500" />}
                 title="Address"
-                text="123 Science Street, Learning City, LC 12345"
+                text="📍 Levels 1 and 2, 17 O’Connell Street Sydney, NSW, 2000"
               />
               <ContactItem
                 icon={<Clock className="w-6 h-6 text-blue-500" />}

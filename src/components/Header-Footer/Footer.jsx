@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="bg-[linear-gradient(135deg,_#2d3748_0%,_#1a202c_100%)] text-white py-12 px-4">
@@ -53,36 +54,36 @@ const Footer = () => (
           <h4 className="mb-4 text-lg font-semibold">Quick Links</h4>
           <ul>
             <li className="mb-2">
-              <a
-                href="about.html"
+              <Link
+                to="/about"
                 className="text-gray-300 hover:text-blue-400 transition-colors"
               >
                 About Us
-              </a>
+              </Link>
             </li>
             <li className="mb-2">
-              <a
-                href="programs.html"
+              <Link
+                to="/programs"
                 className="text-gray-300 hover:text-blue-400 transition-colors"
               >
                 Programs
-              </a>
+              </Link>
             </li>
             <li className="mb-2">
-              <a
-                href="gallery.html"
+              <Link
+                to="/gallery"
                 className="text-gray-300 hover:text-blue-400 transition-colors"
               >
                 Gallery
-              </a>
+              </Link>
             </li>
             <li className="mb-2">
-              <a
-                href="contact.html"
+              <Link
+                to="/contact"
                 className="text-gray-300 hover:text-blue-400 transition-colors"
               >
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

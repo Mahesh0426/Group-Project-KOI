@@ -9,11 +9,31 @@ import ContactUsPage from "./pages/ContactUsPage";
 import LoginPage from "./pages/auth/LoginPage";
 import { ToastContainer } from "react-toastify";
 import SignupPage from "./pages/auth/SignupPage";
+import DashboardPage from "./pages/admin/DashboardPage";
+import AdminProgramsPage from "./pages/admin/AdminProgramsPage";
+import UsersPage from "./pages/admin/UsersPage";
+import SettingPage from "./pages/admin/SettingPage";
+import AdminLayout from "./components/Admin-view/AdminLayout";
+import CreateProgramFormPage from "./pages/admin/CreateProgramFormPage";
+import CreateUsersFormPage from "./pages/admin/CreateUsersFormPage";
 
 function App() {
   return (
     <>
       <Routes>
+        {/* admin layout */}
+        {/* private Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="programs" element={<AdminProgramsPage />} />
+          <Route path="create-program" element={<CreateProgramFormPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="create-users" element={<CreateUsersFormPage />} />
+          <Route path="settings" element={<SettingPage />} />
+        </Route>
+
+        {/* public Routes */}
+        {/* StudentLayout */}
         <Route path="/" element={<StudentLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutUsPage />} />
