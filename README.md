@@ -35,7 +35,11 @@ Follow these steps to run the app locally after cloning from GitHub:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo-name>.git
+git clone https://github.com/Mahesh0426/Group-Project-KOI.git
+
+```
+
+```bash
 cd <your-repo-name>
 ```
 
@@ -45,6 +49,12 @@ Using Yarn (recommended):
 
 ```bash
 yarn install
+```
+
+install all the dependencies above in technology stack using
+
+```bash
+yarn add <command>
 ```
 
 ### 3. Set up environment variables (if needed)
