@@ -4,13 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function AdminSettings() {
+  const { user } = useSelector((state) => state.user);
   // Dummy admin data
   const [adminData, setAdminData] = useState({
-    name: "John Doe",
-    email: "admin@example.com",
-    password: "password123",
+    name: user?.name || "Admin User",
+    email: user?.email || "admin@example.com",
+    password: "********",
   });
 
   const [showPassword, setShowPassword] = useState(false);

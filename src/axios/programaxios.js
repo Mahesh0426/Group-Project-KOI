@@ -3,60 +3,57 @@ import axios from "axios";
 // Server URL
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
-// Signup | User Registration | Create | POST
-export const createUser = (userObj) => {
+// Program | GET
+export const getPrograms = () => {
   const response = axios
-    .post(`${API_URL}/signup.php`, userObj)
+    .get(`${API_URL}/program.php`)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
 
-// Login | Post
-export const loginUser = (userObj) => {
+// Program | GET by user id
+export const getProgramsByUserId = (userId) => {
   const response = axios
-    .post(`${API_URL}/login.php`, userObj)
+    .get(`${API_URL}/program.php?userId=${userId}`)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
 
-// Update User | PUT
-export const updateUser = (userObj) => {
+// Program | POST
+export const createProgram = (programObj) => {
   const response = axios
-    .put(`${API_URL}/user.php`, userObj)
+    .post(`${API_URL}/program.php`, programObj)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
-
-// Get User by ID | GET
-export const getUserById = (id) => {
+// Program | PUT
+export const updateProgram = (programObj, id) => {
   const response = axios
-    .get(`${API_URL}/user.php?id=${id}`)
+    .put(`${API_URL}/program.php?id=${id}`, programObj)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
-
-// Get All Users | GET
-export const getAllUsers = () => {
+// Program | DELETE
+export const deleteProgram = (id) => {
   const response = axios
-    .get(`${API_URL}/user.php`)
+    .delete(`${API_URL}/program.php?id=${id}`)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
-
-// Delete User | DELETE
-export const deleteUser = (id) => {
+// Single Program | GET
+export const getSingleProgram = (id) => {
   const response = axios
-    .delete(`${API_URL}/user.php?id=${id}`)
+    .get(`${API_URL}/program.php?id=${id}`)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 

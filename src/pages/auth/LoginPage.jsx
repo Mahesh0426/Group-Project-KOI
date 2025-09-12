@@ -63,7 +63,7 @@ const LoginPage = () => {
     if (user?.id) {
       switch (user.role) {
         case "admin":
-          navigate("/admin");
+          navigate("/admin/dashboard");
           break;
         case "user":
           navigate("/");

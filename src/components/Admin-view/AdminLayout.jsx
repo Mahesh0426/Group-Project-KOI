@@ -97,7 +97,7 @@
 // export default AdminLayout;
 
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -107,10 +107,18 @@ import {
   UserRoundSearch,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import SidebarItem from "../helper/SidebarItem";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUserAction } from "../../redux/auth/userAction";
 
 const AdminLayout = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
+  console.log("ROLE:", `"${user?.role}"`);
+
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -119,6 +127,12 @@ const AdminLayout = () => {
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
+  };
+
+  //logout function
+  const logoutHandler = () => {
+    dispatch(logoutUserAction());
+    navigate("/login");
   };
 
   return (
@@ -172,6 +186,13 @@ const AdminLayout = () => {
             setActiveItem={setActiveItem}
             onClick={handleSidebarClick}
           />
+          <SidebarItem
+            icon={<LogOut />}
+            label="Logout"
+            onClick={logoutHandler}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+          />
         </nav>
 
         {/* Footer / Profile Section */}
@@ -179,12 +200,13 @@ const AdminLayout = () => {
           <Separator className="my-4 w-full" />
           <div className="flex items-center gap-3 px-2 py-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={"/placeholder.svg"} alt="Profile" />
-              <AvatarFallback>MK</AvatarFallback>
+              <AvatarFallback>
+                {user?.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Mahesh</p>
-              <p className="text-xs text-gray-500">mahesh@gmail.com</p>
+              <p className="text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-xs text-gray-500">{user?.email}</p>
             </div>
           </div>
         </div>
@@ -212,7 +234,9 @@ const AdminLayout = () => {
           <h2 className="text-lg font-semibold">AdminPanel</h2>
           <Avatar className="h-8 w-8">
             <AvatarImage src={"/placeholder.svg"} alt="Profile" />
-            <AvatarFallback>MK</AvatarFallback>
+            <AvatarFallback>
+              {user?.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </header>
 

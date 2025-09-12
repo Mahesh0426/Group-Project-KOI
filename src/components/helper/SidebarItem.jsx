@@ -66,7 +66,7 @@ const SidebarItem = ({
   setActiveItem,
   onClick,
 }) => {
-  const handleClick = (e) => {
+  const handleClick = () => {
     setActiveItem(label);
     if (onClick) {
       onClick(); // Close sidebar on mobile
