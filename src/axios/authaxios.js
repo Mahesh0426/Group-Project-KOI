@@ -1,12 +1,12 @@
 import axios from "axios";
-// VITE_APP_API_BASE_URL = "http://localhost/STEM_server"
+// VITE_APP_API_BASE_URL = "http://localhost/stem-backend"
 // Server URL
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 // Signup | User Registration | Create | POST
 export const createUser = (userObj) => {
   const response = axios
-    .post(`${API_URL}/signup.php`, userObj)
+    .post(`${API_URL}/auth/register.php`, userObj)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
@@ -14,13 +14,21 @@ export const createUser = (userObj) => {
 };
 
 // Login | Post
-export const loginUser = (userObj) => {
-  const response = axios
-    .post(`${API_URL}/login.php`, userObj)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
+export const loginUser = async (userObj) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/login.php`, userObj, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  return response;
+    return response.data;
+  } catch (error) {
+    console.log("Full error details:", error);
+    console.log("Error response data:", error.response?.data);
+
+    throw error; // Re-throw to handle in your component
+  }
 };
 
 // Update User | PUT

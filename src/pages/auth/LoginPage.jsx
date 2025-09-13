@@ -27,37 +27,9 @@ const LoginPage = () => {
     setErrors(newErrors);
     dispatch(loginUserAction(formData));
     setFormData({ email: "", password: "" });
-
-    // if (Object.keys(newErrors).length === 0) {
-    //   try {
-    //     startLoading();
-    //     const result = await loginUser(formData);
-    //     console.log("Login response:", result);
-    //     if (
-    //       result &&
-    //       (result.success === true || result.status === "success")
-    //     ) {
-    //       toast.success("Login successful!");
-    //       setFormData({ email: "", password: "" });
-    //       navigate("/");
-    //     } else {
-    //       const message = result?.message || "Login failed";
-    //       toast.error(message);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error during authentication:", error);
-    //     toast.error("Network or server error occurred. Please try again.");
-    //   }
-
-    // }
   };
   // Logic For redirecting after login
-  const { isAuthenticated, user, isLoading } = useSelector(
-    (state) => state.user
-  );
-
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("user:", user);
+  const { user, isLoading } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (user?.id) {
@@ -65,7 +37,7 @@ const LoginPage = () => {
         case "admin":
           navigate("/admin/dashboard");
           break;
-        case "user":
+        case "learner":
           navigate("/");
           break;
       }

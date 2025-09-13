@@ -4,45 +4,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createProgramAction } from "../../redux/AdminProgram/adminProgramAction";
 
 const CreateProgramFormPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     title: "",
-    ageGroup: "",
-    category: "",
-    instructor: "",
+    description: "",
+    age_group: "",
     duration: "",
     price: "",
     schedule: "",
-    status: "active",
-    description: "",
-    learn: "",
+    learning_outcomes: "",
+    image_filename: null,
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSelectChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+  // handle file change
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("New Program:", formData);
+    try {
+      dispatch(createProgramAction(formData));
+    } catch (error) {
+      console.log(error);
+    }
 
-    // TODO: Replace with API call
-    alert("Program created successfully!");
     navigate("/admin/programs");
   };
 
@@ -73,44 +69,14 @@ const CreateProgramFormPage = () => {
 
             {/* Age Group */}
             <div>
-              <Label htmlFor="ageGroup" className="mb-2">
+              <Label htmlFor="age_group" className="mb-2">
                 Age Group
               </Label>
               <Input
-                id="ageGroup"
-                name="ageGroup"
+                id="age_group"
+                name="age_group"
                 placeholder="e.g., 10-14"
-                value={formData.ageGroup}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Category */}
-            <div>
-              <Label htmlFor="category" className="mb-2">
-                Category
-              </Label>
-              <Input
-                id="category"
-                name="category"
-                placeholder="e.g., Computer Science"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Instructor */}
-            <div>
-              <Label htmlFor="instructor" className="mb-2">
-                Instructor
-              </Label>
-              <Input
-                id="instructor"
-                name="instructor"
-                placeholder="e.g., Dr. Smith"
-                value={formData.instructor}
+                value={formData.age_group}
                 onChange={handleChange}
                 required
               />
@@ -162,23 +128,6 @@ const CreateProgramFormPage = () => {
               />
             </div>
 
-            {/* Status */}
-            <div>
-              <Label className="mb-2">Status</Label>
-              <Select
-                onValueChange={(val) => handleSelectChange("status", val)}
-                defaultValue={formData.status}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Description */}
             <div>
               <Label htmlFor="description" className="mb-2">
@@ -196,17 +145,17 @@ const CreateProgramFormPage = () => {
             </div>
             {/* What Students Will Learn */}
             <div>
-              <Label htmlFor="learn" className="mb-2">
+              <Label htmlFor="learning_outcomes" className="mb-2">
                 What Students Will Learn
               </Label>
               <Textarea
-                id="learn"
-                name="learn"
+                id="learning_outcomes"
+                name="learning_outcomes"
                 placeholder="e.g., 
                 • Basic programming concepts and logic 
                 • Robot assembly and mechanical systems ..."
                 rows={5}
-                value={formData.learn}
+                value={formData.learning_outcomes}
                 onChange={handleChange}
                 required
               />
@@ -218,6 +167,19 @@ const CreateProgramFormPage = () => {
                 <br />• Problem-solving through coding challenges
                 <br />• Teamwork and project presentation skills
               </p>
+            </div>
+            {/* Program Image */}
+            <div>
+              <Label htmlFor="image_filename" className="mb-2">
+                Program Image
+              </Label>
+              <Input
+                id="image_filename"
+                name="image_filename"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
             </div>
 
             {/* Actions */}

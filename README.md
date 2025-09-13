@@ -94,14 +94,28 @@ Directory structure:
     ├── package.json
     ├── vite.config.js
     ├── .env.sample
-    ├── .gitignore
+    ├── backend/
+    │   ├── composer.json
+    │   ├── composer.lock
+    │   ├── config.php
+    │   ├── verify_token.php
+    │   ├── auth/
+    │   │   ├── login.php
+    │   │   ├── profile.php
+    │   │   ├── query.sql
+    │   │   └── register.php
+    │   └── features/
+    │       └── program/
+    │           ├── programs.php
+    │           └── query.sql
     └── src/
         ├── App.css
         ├── App.jsx
         ├── index.css
         ├── main.jsx
         ├── axios/
-        │   └── authaxios.js
+        │   ├── authaxios.js
+        │   └── programaxios.js
         ├── components/
         │   ├── Admin-view/
         │   │   └── AdminLayout.jsx
@@ -114,14 +128,16 @@ Directory structure:
         │   │   └── Header.jsx
         │   ├── helper/
         │   │   ├── LoadingSpinner.jsx
+        │   │   ├── PageLoadingSpinner.jsx
         │   │   └── SidebarItem.jsx
         │   ├── Protected-Route/
-        │   │   └── ProtectedRoute.jsx
+        │   │   └── RouteGuard.jsx
         │   └── ui/
         │       ├── avatar.jsx
         │       ├── badge.jsx
         │       ├── button.jsx
         │       ├── card.jsx
+        │       ├── dropdown-menu.jsx
         │       ├── input.jsx
         │       ├── label.jsx
         │       ├── select.jsx
@@ -148,13 +164,26 @@ Directory structure:
         │   ├── auth/
         │   │   ├── LoginPage.jsx
         │   │   └── SignupPage.jsx
-        │   └── home/
-        │       └── HomePage.jsx
+        │   ├── home/
+        │   │   └── HomePage.jsx
+        │   ├── pageNotFound/
+        │   │   ├── PageNotFound.jsx
+        │   │   └── UnauthorizedPage.jsx
+        │   └── user/
+        │       ├── MyProfilePage.jsx
+        │       └── MyProgramPage.jsx
         └── redux/
             ├── store.js
-            └── auth/
-                ├── userAction.js
-                └── userSlice.js
+            ├── AdminProgram/
+            │   ├── adminProgramAction.js
+            │   └── adminProgramSlice.js
+            ├── auth/
+            │   ├── userAction.js
+            │   └── userSlice.js
+            └── UserProgram/
+                ├── UserProgramAction.js
+                └── userProgramSlice.js
+
 
 ```
 

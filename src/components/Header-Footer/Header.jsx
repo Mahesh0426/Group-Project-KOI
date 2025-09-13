@@ -199,13 +199,13 @@ const Header = () => {
                 <DropdownMenuTrigger className="focus:outline-none">
                   <Avatar className="h-8 w-8 transition transform hover:scale-110">
                     <AvatarFallback className="bg-gradient-to-br bg-amber-400 text-black">
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {user?.username?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem className="flex items-center gap-2">
-                    <span className="font-medium">{user?.name}</span>
+                    <span className="font-medium">{user?.username}</span>
                   </DropdownMenuItem>
                   <Separator className=" my-2 w-full" />
                   <DropdownMenuItem className="flex items-center gap-2 text-red-600">
@@ -282,13 +282,13 @@ const Header = () => {
                   <DropdownMenuTrigger className="focus:outline-none flex items-center gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-gradient-to-br bg-amber-400 text-black">
-                        {user?.name?.charAt(0).toUpperCase()}
+                        {user?.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem className="flex items-center gap-2">
-                      <span className="font-medium">{user?.name}</span>
+                      <span className="font-medium">{user?.username}</span>
                     </DropdownMenuItem>
                     <Separator className=" my-2 w-full" />
 

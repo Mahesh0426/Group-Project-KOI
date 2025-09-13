@@ -6,7 +6,6 @@ import {
   updateUser,
 } from "../../axios/authaxios";
 import {
-  clearUser,
   setIsAuthenticated,
   setIsLoading,
   setUser,
@@ -18,13 +17,24 @@ import {
 // Login Action
 export const loginUserAction = (userObject) => async (dispatch) => {
   try {
-    // call axios
     dispatch(setIsLoading(true));
     const result = await loginUser(userObject);
+
+    console.log("loginUserAction result:", result);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));
       return toast.error(result.message);
+    }
+
+    //  Save token to localStorage
+    if (result.access_token) {
+      localStorage.setItem("accessToken", result.access_token);
+    }
+
+    // save user info
+    if (result.user) {
+      localStorage.setItem("user", JSON.stringify(result.user));
     }
 
     dispatch(setIsAuthenticated(true));
@@ -32,7 +42,14 @@ export const loginUserAction = (userObject) => async (dispatch) => {
 
     toast.success(result.message);
   } catch (err) {
-    console.log(err);
+    console.log("Login error details:", err);
+    const errorMessage =
+      err.response?.data?.error ||
+      err.response?.data?.message ||
+      err.message ||
+      "An unexpected error occurred";
+
+    toast.error(errorMessage);
   } finally {
     dispatch(setIsLoading(false));
   }

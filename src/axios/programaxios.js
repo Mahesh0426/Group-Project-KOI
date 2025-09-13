@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_APP_API_BASE_URL;
 // Program | GET
 export const getPrograms = () => {
   const response = axios
-    .get(`${API_URL}/program.php`)
+    .get(`${API_URL}/features/program/programs.php`)
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
@@ -24,14 +24,39 @@ export const getProgramsByUserId = (userId) => {
 };
 
 // Program | POST
-export const createProgram = (programObj) => {
-  const response = axios
-    .post(`${API_URL}/program.php`, programObj)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
 
-  return response;
+export const createProgram = async (programObj, token) => {
+  const formData = new FormData();
+
+  for (const key in programObj) {
+    if (key === "learning_outcomes") {
+      // Split textarea into array
+      const outcomesArray = programObj[key]
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "");
+      formData.append(key, JSON.stringify(outcomesArray));
+    } else if (key === "image" && programObj[key]) {
+      formData.append("image", programObj[key]); //  append file
+    } else {
+      formData.append(key, programObj[key]);
+    }
+  }
+
+  return axios
+    .post(`${API_URL}/features/program/programs.php`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error("Error creating program:", error.response?.data || error);
+      throw error;
+    });
 };
+
 // Program | PUT
 export const updateProgram = (programObj, id) => {
   const response = axios

@@ -26,9 +26,10 @@ import {
 } from "@/components/ui/table";
 import { Plus, Search, Edit, Trash2, Calendar, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 // Dummy data
-const programs = [
+const program = [
   {
     id: "robotics",
     title: "Robotics & Coding",
@@ -76,11 +77,16 @@ const programs = [
 ];
 
 export default function AdminProgramsPage() {
+  const { programs } = useSelector((state) => state.adminProgram);
+  console.log("AdminProgramsPage programs:", programs);
+
+  // const dispatch = useDispatch();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const filteredPrograms = programs.filter((program) => {
+  const filteredPrograms = program.filter((program) => {
     const matchesSearch =
       program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       program.instructor.toLowerCase().includes(searchTerm.toLowerCase());

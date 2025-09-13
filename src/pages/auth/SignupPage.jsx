@@ -11,7 +11,7 @@ import { Mail, User, Lock } from "lucide-react";
 const SignupPage = () => {
   const navigate = useNavigate();
   const { formData, handleOnChange, setFormData } = useForm({
-    name: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -24,7 +24,7 @@ const SignupPage = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "Email is required";
     if (!formData.password) newErrors.password = "Password is required";
-    if (!formData.name) newErrors.name = "Name is required";
+    if (!formData.username) newErrors.username = "Username is required";
 
     setErrors(newErrors);
 
@@ -33,12 +33,9 @@ const SignupPage = () => {
         startLoading();
         const result = await createUser(formData);
         console.log("Signup response:", result);
-        if (
-          result &&
-          (result.success === true || result.status === "success")
-        ) {
-          toast.success("Signup successful! Please log in.");
-          setFormData({ name: "", email: "", password: "" });
+        if (result || result.success === true || result.status === "success") {
+          toast.success(result?.message || "Signup successful! Please log in.");
+          setFormData({ username: "", email: "", password: "" });
           navigate("/login");
         } else {
           const message = result?.message || "Signup failed";
@@ -79,13 +76,13 @@ const SignupPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <CustomInput
               label="Full Name"
-              name="name"
+              name="username"
               type="text"
               placeholder="Enter your full name"
               icon={<User className="w-5 h-5 text-gray-400" />}
-              value={formData.name}
+              value={formData.username}
               onChange={handleOnChange}
-              error={errors.name}
+              error={errors.username}
             />
 
             <CustomInput

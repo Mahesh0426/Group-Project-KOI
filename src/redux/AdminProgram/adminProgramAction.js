@@ -13,6 +13,7 @@ export const getAllProgramsAction = () => async (dispatch) => {
     //call axios
     dispatch(setIsLoading(true));
     const result = await getPrograms();
+    console.log("getAllProgramsAction result:", result);
     if (result.status === "error") {
       dispatch(setIsLoading(false));
       return toast.error(result.message);
@@ -48,7 +49,10 @@ export const createProgramAction = (programObj) => async (dispatch) => {
   try {
     // call axios
     dispatch(setIsLoading(true));
-    const result = await createProgram(programObj);
+    const token = localStorage.getItem("accessToken");
+    const result = await createProgram(programObj, token);
+
+    console.log("createProgramAction result:", result);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));
