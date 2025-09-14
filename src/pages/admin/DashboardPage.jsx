@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -8,42 +11,58 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { getAllUsersAction } from "../../redux/auth/userAction";
+import { getAllProgramsAction } from "../../redux/AdminProgram/adminProgramAction";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  // Dummy data
+  const dispatch = useDispatch();
+
+  // Get data from Redux store
+  const { users: allUsers, isLoading: usersLoading } = useSelector(
+    (state) => state.user
+  );
+  const { programs: allPrograms, isLoading: programsLoading } = useSelector(
+    (state) => state.adminProgram
+  );
+
+  // Local state for search and fetch tracking
+  const [hasFetchedUsers, setHasFetchedUsers] = useState(false);
+  const [hasFetchedPrograms, setHasFetchedPrograms] = useState(false);
+
+  // Fetch users data
+  useEffect(() => {
+    if (!usersLoading && allUsers.length === 0 && !hasFetchedUsers) {
+      dispatch(getAllUsersAction());
+      setHasFetchedUsers(true);
+    }
+  }, [dispatch, usersLoading, allUsers.length, hasFetchedUsers]);
+
+  // Fetch programs data
+  useEffect(() => {
+    if (!programsLoading && allPrograms.length === 0 && !hasFetchedPrograms) {
+      dispatch(getAllProgramsAction());
+      setHasFetchedPrograms(true);
+    }
+  }, [dispatch, programsLoading, allPrograms.length, hasFetchedPrograms]);
+
+  // Calculate stats dynamically
   const stats = {
-    totalUsers: 120,
-    totalPrograms: 8,
-    totalEnrollments: 54,
+    totalUsers: allUsers.length,
+    totalPrograms: allPrograms.length,
+    totalEnrollments: allPrograms.reduce((total, program) => {
+      return total + (program.enrollments?.length || 0);
+    }, 0),
   };
 
-  const users = [
-    { id: 1, name: "Alice", email: "alice@example.com", role: "student" },
-    { id: 2, name: "Bob", email: "bob@example.com", role: "student" },
-    {
-      id: 3,
-      name: "Charlie",
-      email: "charlie@example.com",
-      role: "instructor",
-    },
-  ];
+  // Filter users to exclude admins if needed, or show all
+  const displayUsers = allUsers.filter((user) => user.role !== "admin");
 
-  const programs = [
-    {
-      id: "robotics",
-      title: "Robotics & Coding",
-      category: "Computer Science",
-      schedule: "Saturdays 10:00 AM - 12:00 PM",
-    },
-    {
-      id: "painting",
-      title: "Creative Painting",
-      category: "Arts",
-      schedule: "Sundays 2:00 PM - 4:00 PM",
-    },
-  ];
+  // Get recent users (last 3 for display)
+  const recentUsers = displayUsers.slice(0, 3);
+
+  // Get recent programs (last 2 for display)
+  const recentPrograms = allPrograms.slice(0, 2);
 
   return (
     <div className="p-8 space-y-8">
@@ -81,64 +100,97 @@ const AdminDashboard = () => {
 
       {/* Users Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Users</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Recent Users</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/admin/users")}
+          >
+            View All
+          </Button>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
+          {usersLoading ? (
+            <p>Loading users...</p>
+          ) : recentUsers.length === 0 ? (
+            <p>No users found.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {recentUsers.map((user) => (
+                  <TableRow key={user._id || user.id}>
+                    <TableCell>
+                      {user._id?.substring(0, 8) || user.id}
+                    </TableCell>
+                    <TableCell>{user.username || user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="capitalize">{user.role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
       {/* Programs Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Programs</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Recent Programs</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/admin/programs")}
+          >
+            View All
+          </Button>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Schedule</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {programs.map((program) => (
-                <TableRow key={program.id}>
-                  <TableCell>{program.id}</TableCell>
-                  <TableCell>{program.title}</TableCell>
-                  <TableCell>{program.category}</TableCell>
-                  <TableCell>{program.schedule}</TableCell>
+          {programsLoading ? (
+            <p>Loading programs...</p>
+          ) : recentPrograms.length === 0 ? (
+            <p>No programs found.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Schedule</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {recentPrograms.map((program) => (
+                  <TableRow key={program._id || program.id}>
+                    <TableCell>
+                      {program._id?.substring(0, 8) || program.id}
+                    </TableCell>
+                    <TableCell>{program.title}</TableCell>
+                    <TableCell>{program.category}</TableCell>
+                    <TableCell>{program.schedule}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
-      {/* Example Action Button */}
-      <div className="flex justify-end">
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-4">
+        <Button variant="outline" onClick={() => navigate("/admin/users")}>
+          Manage Users
+        </Button>
         <Button onClick={() => navigate("/admin/create-program")}>
           Create New Program
         </Button>

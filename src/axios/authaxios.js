@@ -31,20 +31,39 @@ export const loginUser = async (userObj) => {
   }
 };
 
-// Update User | PUT
-export const updateUser = (userObj) => {
+// Update User | PUT | admin setting
+export const updateUser = (id, userObj, token) => {
   const response = axios
-    .put(`${API_URL}/user.php`, userObj)
+    .put(
+      `${API_URL}/auth/admin_users.php`,
+      { id, ...userObj },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((res) => res.data)
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error);
+      return {
+        status: "error",
+        message: error.response?.data?.error || "Failed to update user",
+      };
+    });
 
   return response;
 };
 
 // Get User by ID | GET
-export const getUserById = (id) => {
+export const getUserById = (id, token) => {
   const response = axios
-    .get(`${API_URL}/user.php?id=${id}`)
+    .get(`${API_URL}/auth/admin_users.php?id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
@@ -52,21 +71,49 @@ export const getUserById = (id) => {
 };
 
 // Get All Users | GET
-export const getAllUsers = () => {
+export const getAllUsers = async (token) => {
+  const response = await axios
+    .get(`${API_URL}/auth/admin_users.php`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((error) => console.log(error));
+  return response;
+};
+
+// Delete User | DELETE
+export const deleteUser = (id, token) => {
   const response = axios
-    .get(`${API_URL}/user.php`)
+    .delete(`${API_URL}/auth/admin_users.php`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: { id: id },
+    })
     .then((res) => res.data)
     .catch((error) => console.log(error));
 
   return response;
 };
-
-// Delete User | DELETE
-export const deleteUser = (id) => {
-  const response = axios
-    .delete(`${API_URL}/user.php?id=${id}`)
+//update learner user details
+export const updateLearner = async (userObj, token) => {
+  console.log("token :", token);
+  return axios
+    .put(`${API_URL}/auth/profile.php`, userObj, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
     .then((res) => res.data)
-    .catch((error) => console.log(error));
-
-  return response;
+    .catch((error) => {
+      console.error(error);
+      return {
+        status: "error",
+        message: error.response?.data?.error || "Failed to update user",
+      };
+    });
 };

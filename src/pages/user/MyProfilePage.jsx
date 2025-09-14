@@ -4,16 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { User, Mail, Lock } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { userUpdateLearnerAction } from "../../redux/auth/userAction";
 
 const MyProfilePage = () => {
-  // Dummy user data (later you can replace with DB data)
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "johndoe@email.com",
-    password: "password123",
-  });
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
 
-  const [formData, setFormData] = useState(user);
+  const [formData, setFormData] = useState({
+    id: user?.id || "",
+    username: user?.username || "John Doe",
+    email: user?.email || "bLZ4R@example.com",
+    password: "********",
+    role: user?.role || "learner",
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,8 +25,7 @@ const MyProfilePage = () => {
 
   const handleSave = (e) => {
     e.preventDefault();
-    setUser(formData); // update state (later connect to API/DB)
-    alert("Profile updated successfully ✅");
+    dispatch(userUpdateLearnerAction(formData));
   };
 
   return (
@@ -36,13 +39,13 @@ const MyProfilePage = () => {
           <form onSubmit={handleSave} className="space-y-6">
             {/* Name */}
             <div className="space-y-2">
-              <Label htmlFor="name" className="flex items-center gap-2">
+              <Label htmlFor="username" className="flex items-center gap-2">
                 <User size={16} /> Name
               </Label>
               <Input
-                id="name"
-                name="name"
-                value={formData.name}
+                id="username"
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
                 className="w-full"
               />

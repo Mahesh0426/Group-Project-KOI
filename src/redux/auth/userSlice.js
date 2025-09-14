@@ -4,6 +4,7 @@ const initialState = {
   user: {},
   users: [],
   isLoading: false,
+  selectedUser: {},
   isAuthenticated: false,
 };
 
@@ -18,6 +19,9 @@ const userSlice = createSlice({
     },
     setUsers: (state, action) => {
       state.users = action.payload;
+    },
+    setSelectedUser: (state, action) => {
+      state.selectedUser = action.payload;
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
@@ -38,6 +42,7 @@ const { reducer: userReducer, actions } = userSlice;
 export const {
   setUser,
   setUsers,
+  setSelectedUser,
   setIsLoading,
   setIsAuthenticated,
   clearUser,

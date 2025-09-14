@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,72 +24,56 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Edit, Trash2, Calendar, DollarSign } from "lucide-react";
-import { Link } from "react-router-dom";
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  Calendar,
+  DollarSign,
+  ImageIcon,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-// Dummy data
-const program = [
-  {
-    id: "robotics",
-    title: "Robotics & Coding",
-    ageGroup: "10-14",
-    category: "Computer Science",
-    instructor: "Dr. Smith",
-    duration: "8 weeks",
-    price: 299,
-    status: "active",
-    schedule: "Saturdays 10:00 AM - 12:00 PM",
-  },
-  {
-    id: "chemistry",
-    title: "Chemistry Lab Adventures",
-    ageGroup: "8-12",
-    category: "General Science",
-    instructor: "Ms. Johnson",
-    duration: "6 weeks",
-    price: 249,
-    status: "enrolling",
-    schedule: "Wednesdays 4:00 PM - 6:00 PM",
-  },
-  {
-    id: "engineering",
-    title: "Engineering Design Challenge",
-    ageGroup: "9-14",
-    category: "Engineering",
-    instructor: "Mr. Brown",
-    duration: "10 weeks",
-    price: 349,
-    status: "active",
-    schedule: "Fridays 4:30 PM - 6:30 PM",
-  },
-  {
-    id: "math",
-    title: "Math Magic & Logic",
-    ageGroup: "8-13",
-    category: "Computer Science",
-    instructor: "Mrs. Green",
-    duration: "8 weeks",
-    price: 279,
-    status: "completed",
-    schedule: "Tuesdays 4:00 PM - 5:30 PM",
-  },
-];
+import {
+  deleteProgramAction,
+  getAllProgramsAction,
+  updateProgramAction,
+} from "../../redux/AdminProgram/adminProgramAction";
+import ConfirmDelete from "../../components/helper/ConfirmDelete";
 
 export default function AdminProgramsPage() {
   const { programs } = useSelector((state) => state.adminProgram);
-  console.log("AdminProgramsPage programs:", programs);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllProgramsAction());
+  }, [dispatch]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const filteredPrograms = program.filter((program) => {
-    const matchesSearch =
-      program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      program.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+  // Transform the programs data to match the expected structure
+  const transformedPrograms = programs.map((program) => ({
+    id: program.id,
+    title: program.title,
+    ageGroup: program.age_group,
+    category: "STEM",
+
+    duration: program.duration,
+    price: parseFloat(program.price),
+    status: "active",
+    schedule: program.schedule,
+    image_url: program.image_url,
+    created_at: program.created_at,
+  }));
+
+  const filteredPrograms = transformedPrograms.filter((program) => {
+    const matchesSearch = program.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesStatus =
       statusFilter === "all" || program.status === statusFilter;
     const matchesCategory =
@@ -109,6 +93,10 @@ export default function AdminProgramsPage() {
       default:
         return "secondary";
     }
+  };
+
+  const handleEdit = (programId) => {
+    navigate(`/admin/edit-program/${programId}`);
   };
 
   return (
@@ -141,7 +129,9 @@ export default function AdminProgramsPage() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{programs.length}</div>
+            <div className="text-2xl font-bold">
+              {transformedPrograms.length}
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -153,7 +143,7 @@ export default function AdminProgramsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {programs.filter((p) => p.status === "active").length}
+              {transformedPrograms.filter((p) => p.status === "active").length}
             </div>
           </CardContent>
         </Card>
@@ -166,7 +156,10 @@ export default function AdminProgramsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${programs.reduce((sum, p) => sum + p.price, 0).toLocaleString()}
+              $
+              {transformedPrograms
+                .reduce((sum, p) => sum + p.price, 0)
+                .toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -183,7 +176,7 @@ export default function AdminProgramsPage() {
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search programs or instructors..."
+                  placeholder="Search programs "
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -223,16 +216,18 @@ export default function AdminProgramsPage() {
         <CardHeader>
           <CardTitle>All Programs</CardTitle>
           <CardDescription>
-            Showing {filteredPrograms.length} of {programs.length} programs
+            Showing {filteredPrograms.length} of {transformedPrograms.length}{" "}
+            programs
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>SN</TableHead>
+                <TableHead className="w-[80px]">Image</TableHead>
                 <TableHead>Program</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Instructor</TableHead>
                 <TableHead>Schedule</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Price</TableHead>
@@ -241,38 +236,84 @@ export default function AdminProgramsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPrograms.map((program) => (
-                <TableRow key={program.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{program.title}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Age: {program.ageGroup}
+              {filteredPrograms.length > 0 ? (
+                filteredPrograms.map((program, index) => (
+                  <TableRow key={program.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      {program.image_url ? (
+                        <div className="h-12 w-12 overflow-hidden rounded-md border">
+                          <img
+                            src={program.image_url}
+                            alt={program.title}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-12 w-12 flex items-center justify-center rounded-md border bg-muted">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{program.title}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Age: {program.ageGroup}
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{program.category}</TableCell>
-                  <TableCell>{program.instructor}</TableCell>
-                  <TableCell>{program.schedule}</TableCell>
-                  <TableCell>{program.duration}</TableCell>
-                  <TableCell>${program.price}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusColor(program.status)}>
-                      {program.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    </TableCell>
+                    <TableCell>{program.category}</TableCell>
+                    <TableCell>{program.schedule}</TableCell>
+                    <TableCell>{program.duration}</TableCell>
+                    <TableCell>${program.price}</TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusColor(program.status)}>
+                        {program.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(program?.id)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        {/* delete button */}
+                        <ConfirmDelete
+                          onDelete={() =>
+                            dispatch(deleteProgramAction(program?.id))
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-8">
+                    <div className="flex flex-col items-center justify-center">
+                      <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-medium">No programs found</h3>
+                      <p className="text-muted-foreground">
+                        {transformedPrograms.length === 0
+                          ? "You haven't created any programs yet."
+                          : "Try adjusting your search or filter to find what you're looking for."}
+                      </p>
+                      {transformedPrograms.length === 0 && (
+                        <Link to="/admin/create-program" className="mt-4">
+                          <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Your First Program
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

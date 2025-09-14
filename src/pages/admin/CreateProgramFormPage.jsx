@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createProgramAction } from "../../redux/AdminProgram/adminProgramAction";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createProgramAction,
+  updateProgramAction,
+  getProgramByIdAction,
+} from "../../redux/AdminProgram/adminProgramAction";
 
-const CreateProgramFormPage = () => {
+const CreateEditProgramFormPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id } = useParams();
+  const { programs, isLoading } = useSelector((state) => state.adminProgram);
+  // Determine if we're in edit mode
+  const isEditMode = Boolean(id);
+  // Filter the program from the programs list
+  const program = isEditMode ? programs.find((p) => p.id == id) : null;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -23,18 +33,51 @@ const CreateProgramFormPage = () => {
     image_filename: null,
   });
 
+  // Load program data when in edit mode
+  useEffect(() => {
+    if (isEditMode && id) {
+      dispatch(getProgramByIdAction(id));
+    }
+  }, [dispatch, id, isEditMode]);
+
+  // Populate form when program data is loaded
+  useEffect(() => {
+    if (isEditMode && program && program.id == id) {
+      setFormData({
+        title: program.title || "",
+        description: program.description || "",
+        age_group: program.age_group || "",
+        duration: program.duration || "",
+        price: program.price || "",
+        schedule: program.schedule || "",
+        learning_outcomes: Array.isArray(program.learning_outcomes)
+          ? program.learning_outcomes.join("\n")
+          : program.learning_outcomes || "",
+        image_filename: null, // Reset file input for edit
+      });
+    }
+  }, [program, isEditMode, id]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  // handle file change
+
+  // Handle file change - store the file in image_filename field
   const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    setFormData({ ...formData, image_filename: e.target.files[0] });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     try {
-      dispatch(createProgramAction(formData));
+      if (isEditMode) {
+        // Update existing program
+        dispatch(updateProgramAction(formData, id));
+      } else {
+        // Create new program
+        dispatch(createProgramAction(formData));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -42,12 +85,25 @@ const CreateProgramFormPage = () => {
     navigate("/admin/programs");
   };
 
+  // Show loading while fetching program data in edit mode
+  if (isEditMode && isLoading && !program) {
+    return (
+      <div className="container mx-auto px-4 py-10 max-w-3xl">
+        <Card className="rounded-2xl shadow-md">
+          <CardContent className="p-8">
+            <div className="text-center">Loading program data...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-10 max-w-3xl">
       <Card className="rounded-2xl shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
-            Create New Program
+            {isEditMode ? "Edit Program" : "Create New Program"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -143,6 +199,7 @@ const CreateProgramFormPage = () => {
                 required
               />
             </div>
+
             {/* What Students Will Learn */}
             <div>
               <Label htmlFor="learning_outcomes" className="mb-2">
@@ -151,8 +208,8 @@ const CreateProgramFormPage = () => {
               <Textarea
                 id="learning_outcomes"
                 name="learning_outcomes"
-                placeholder="e.g., 
-                • Basic programming concepts and logic 
+                placeholder="e.g.,
+                • Basic programming concepts and logic
                 • Robot assembly and mechanical systems ..."
                 rows={5}
                 value={formData.learning_outcomes}
@@ -168,10 +225,12 @@ const CreateProgramFormPage = () => {
                 <br />• Teamwork and project presentation skills
               </p>
             </div>
+
             {/* Program Image */}
             <div>
               <Label htmlFor="image_filename" className="mb-2">
-                Program Image
+                Program Image{" "}
+                {isEditMode && "(Leave empty to keep current image)"}
               </Label>
               <Input
                 id="image_filename"
@@ -180,6 +239,16 @@ const CreateProgramFormPage = () => {
                 accept="image/*"
                 onChange={handleFileChange}
               />
+              {isEditMode && program?.image_url && (
+                <div className="mt-2">
+                  <p className="text-sm text-gray-600 mb-2">Current image:</p>
+                  <img
+                    src={program.image_url}
+                    alt="Current program image"
+                    className="w-32 h-32 object-cover rounded-md border"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Actions */}
@@ -194,8 +263,15 @@ const CreateProgramFormPage = () => {
               <Button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={isLoading}
               >
-                Create Program
+                {isLoading
+                  ? isEditMode
+                    ? "Updating..."
+                    : "Creating..."
+                  : isEditMode
+                  ? "Update Program"
+                  : "Create Program"}
               </Button>
             </div>
           </form>
@@ -205,4 +281,4 @@ const CreateProgramFormPage = () => {
   );
 };
 
-export default CreateProgramFormPage;
+export default CreateEditProgramFormPage;

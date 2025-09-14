@@ -13,12 +13,12 @@ export const getAllProgramsAction = () => async (dispatch) => {
     //call axios
     dispatch(setIsLoading(true));
     const result = await getPrograms();
-    console.log("getAllProgramsAction result:", result);
+    // console.log("getAllProgramsAction result:", result);
     if (result.status === "error") {
       dispatch(setIsLoading(false));
       return toast.error(result.message);
     }
-    dispatch(setPrograms(result.programs));
+    dispatch(setPrograms(result));
     toast.success(result.message);
   } catch (error) {
     console.log(error);
@@ -36,7 +36,7 @@ export const getProgramByIdAction = (id) => async (dispatch) => {
       dispatch(setIsLoading(false));
       return toast.error(result.message);
     }
-    dispatch(setProgram(result.programs));
+    dispatch(setProgram(result));
   } catch (error) {
     console.log(error);
   } finally {
@@ -52,7 +52,7 @@ export const createProgramAction = (programObj) => async (dispatch) => {
     const token = localStorage.getItem("accessToken");
     const result = await createProgram(programObj, token);
 
-    console.log("createProgramAction result:", result);
+    // console.log("createProgramAction result:", result);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));
@@ -71,9 +71,9 @@ export const createProgramAction = (programObj) => async (dispatch) => {
 // updateProgramAction
 export const updateProgramAction = (programObj, id) => async (dispatch) => {
   try {
-    // call axios
     dispatch(setIsLoading(true));
-    const result = await updateProgram(programObj, id);
+    const token = localStorage.getItem("accessToken");
+    const result = await updateProgram(programObj, id, token);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));
@@ -82,20 +82,20 @@ export const updateProgramAction = (programObj, id) => async (dispatch) => {
 
     toast.success(result.message);
     dispatch(getAllProgramsAction());
-    // dispatch(getProgramByIdAction(result.programs.id));
   } catch (err) {
     console.log(err);
+    toast.error("Error updating program");
   } finally {
     dispatch(setIsLoading(false));
   }
 };
-
 // deleteProgramAction
 export const deleteProgramAction = (id) => async (dispatch) => {
   try {
     // call axios
     dispatch(setIsLoading(true));
-    const result = await deleteProgram(id);
+    const token = localStorage.getItem("accessToken");
+    const result = await deleteProgram(id, token);
 
     if (result.status === "error") {
       dispatch(setIsLoading(false));

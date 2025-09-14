@@ -4,14 +4,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { userUpdateAdminAction } from "../../redux/auth/userAction";
 
 export default function AdminSettings() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+
   // Dummy admin data
   const [adminData, setAdminData] = useState({
-    name: user?.name || "Admin User",
+    id: user?.id || "",
+    username: user?.username || "Admin User",
     email: user?.email || "admin@example.com",
+    role: user?.role || "admin",
     password: "********",
   });
 
@@ -24,9 +29,7 @@ export default function AdminSettings() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated Admin Data:", adminData);
-    alert("Settings updated successfully!");
-    // Replace console.log with API call to update admin settings
+    dispatch(userUpdateAdminAction(adminData));
   };
 
   return (
@@ -39,11 +42,11 @@ export default function AdminSettings() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="username">Name</Label>
               <Input
-                id="name"
-                name="name"
-                value={adminData.name}
+                id="username"
+                name="username"
+                value={adminData.username}
                 onChange={handleChange}
                 placeholder="Enter your name"
                 required

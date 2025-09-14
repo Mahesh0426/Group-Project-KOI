@@ -35,9 +35,10 @@ const ContactUsPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simple validation example
+
+    // Simple validation
     const newErrors = {};
     if (!formData.parentName) newErrors.parentName = "Parent name is required";
     if (!formData.childName) newErrors.childName = "Child name is required";
@@ -51,11 +52,49 @@ const ContactUsPage = () => {
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      setSubmitted(true);
-      console.log("Form submitted", formData);
+    if (Object.keys(newErrors).length > 0) return;
+
+    try {
+      // Prepare form data for Web3Forms
+      const fd = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        fd.append(key, value);
+      });
+
+      // Add your Web3Forms access key
+      fd.append("access_key", import.meta.env.VITE_WEB3FORM_ACCESS_KEY);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: fd,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({
+          parentName: "",
+          childName: "",
+          childAge: "",
+          program: "",
+          email: "",
+          phone: "",
+          inquiryType: "",
+          message: "",
+          newsletter: false,
+          privacy: false,
+        });
+      } else {
+        console.error("Web3Forms error:", data);
+        alert("Something went wrong: " + data.message);
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Failed to submit form. Please try again later.");
     }
   };
+
   return (
     <main>
       <section className="py-16 bg-gray-50 px-4 max-w-[1200px] mx-auto">

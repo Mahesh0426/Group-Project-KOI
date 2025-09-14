@@ -26,39 +26,46 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/*" element={<PageNotFound />} />
+        {/* Public routes first */}
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
-        {/* admin layout */}
-        {/* private Routes */}
-        <Route
+
+        {/* Admin routes */}
+        {/* <Route
           path="/admin/*"
           element={
             <RouteGuard>
               <AdminLayout />
             </RouteGuard>
           }
-        >
+        > */}
+        <Route path="/admin/*" element={<AdminLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="programs" element={<AdminProgramsPage />} />
           <Route path="create-program" element={<CreateProgramFormPage />} />
+          <Route path="edit-program/:id" element={<CreateProgramFormPage />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="create-users" element={<CreateUsersFormPage />} />
+          <Route path="edit-users/:id" element={<CreateUsersFormPage />} />
           <Route path="settings" element={<SettingPage />} />
         </Route>
 
-        {/* StudentLayout */}
+        {/* StudentLayout - public routes */}
         <Route path="/" element={<StudentLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutUsPage />} />
-          <Route path="/programs" element={<ProgramsPage />} />
-          <Route path="/gallery" element={<GallaryPage />} />
-          <Route path="/contact" element={<ContactUsPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/my-program" element={<MyProgramPage />} />
-          <Route path="/my-profile" element={<MyProfilePage />} />
+          <Route index element={<HomePage />} />
+          <Route path="about" element={<AboutUsPage />} />
+          <Route path="programs" element={<ProgramsPage />} />
+          <Route path="gallery" element={<GallaryPage />} />
+          <Route path="contact" element={<ContactUsPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="my-program" element={<MyProgramPage />} />
+          <Route path="my-profile" element={<MyProfilePage />} />
         </Route>
+
+        {/* Catch-all route should be LAST */}
+        <Route path="/*" element={<PageNotFound />} />
       </Routes>
+
       <ToastContainer position="top-center" autoClose={2000} />
     </>
   );

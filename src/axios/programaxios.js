@@ -28,17 +28,23 @@ export const getProgramsByUserId = (userId) => {
 export const createProgram = async (programObj, token) => {
   const formData = new FormData();
 
+  // Append all fields to FormData
   for (const key in programObj) {
     if (key === "learning_outcomes") {
-      // Split textarea into array
       const outcomesArray = programObj[key]
         .split("\n")
         .map((line) => line.trim())
         .filter((line) => line !== "");
       formData.append(key, JSON.stringify(outcomesArray));
-    } else if (key === "image" && programObj[key]) {
-      formData.append("image", programObj[key]); //  append file
-    } else {
+    } else if (key === "image_filename") {
+      // Handle the file separately - PHP expects it as 'image'
+      if (
+        programObj.image_filename &&
+        programObj.image_filename instanceof File
+      ) {
+        formData.append("image", programObj.image_filename);
+      }
+    } else if (programObj[key] !== null && programObj[key] !== undefined) {
       formData.append(key, programObj[key]);
     }
   }
@@ -46,7 +52,6 @@ export const createProgram = async (programObj, token) => {
   return axios
     .post(`${API_URL}/features/program/programs.php`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     })
@@ -57,23 +62,64 @@ export const createProgram = async (programObj, token) => {
     });
 };
 
-// Program | PUT
-export const updateProgram = (programObj, id) => {
-  const response = axios
-    .put(`${API_URL}/program.php?id=${id}`, programObj)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
+// Program | POST (Update)
+export const updateProgram = async (programObj, id, token) => {
+  const formData = new FormData();
 
-  return response;
+  // Add the ID to identify this as an update operation
+  formData.append("id", id);
+
+  // Append all fields to FormData (same logic as create)
+  for (const key in programObj) {
+    if (key === "learning_outcomes") {
+      const outcomesArray = programObj[key]
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "");
+      formData.append(key, JSON.stringify(outcomesArray));
+    } else if (key === "image_filename") {
+      // Only append image if a new file was selected
+      if (
+        programObj.image_filename &&
+        programObj.image_filename instanceof File
+      ) {
+        formData.append("image", programObj.image_filename);
+      }
+    } else if (programObj[key] !== null && programObj[key] !== undefined) {
+      formData.append(key, programObj[key]);
+    }
+  }
+
+  // Use POST instead of PUT to match your PHP backend
+  return axios
+    .post(`${API_URL}/features/program/programs.php`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error("Error updating program:", error.response?.data || error);
+      throw error;
+    });
 };
-// Program | DELETE
-export const deleteProgram = (id) => {
-  const response = axios
-    .delete(`${API_URL}/program.php?id=${id}`)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
 
-  return response;
+// Program | DELETE
+export const deleteProgram = async (id, token) => {
+  return axios
+    .delete(`${API_URL}/features/program/programs.php`, {
+      data: { id: id },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error("Error deleting program:", error.response?.data || error);
+      throw error;
+    });
 };
 // Single Program | GET
 export const getSingleProgram = (id) => {
