@@ -15,7 +15,7 @@ const MyProgramPage = () => {
       price: "$299",
       schedule: "Saturdays 10:00 AM - 12:00 PM",
       status: "In Progress",
-      image: "src/assets/Robotics/collaborating-instructor-guidance.png",
+      image: "assets/Robotics/collaborating-instructor-guidance.png",
     },
     {
       id: 2,
@@ -25,7 +25,7 @@ const MyProgramPage = () => {
       price: "$249",
       schedule: "Wednesdays 4:00 PM - 6:00 PM",
       status: "Upcoming",
-      image: "src/assets/Chemistry/Chemistry-Experiments.png",
+      image: "assets/Chemistry/Chemistry-Experiments.png",
     },
   ];
 

@@ -72,7 +72,7 @@ const AboutUsPage = () => {
               <Card className="overflow-hidden rounded-2xl shadow-xl w-full h-full p-0">
                 <CardContent className="p-0 h-full">
                   <img
-                    src="src/assets/about.png"
+                    src="assets/about.png"
                     alt="Children working together on a science project with an instructor guiding them"
                     className="w-full h-full"
                   />

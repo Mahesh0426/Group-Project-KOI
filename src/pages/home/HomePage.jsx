@@ -46,7 +46,7 @@ const HomePage = () => {
       title: "Robotics & Coding",
       description:
         "Build and program your own robots while learning fundamental coding concepts.",
-      image: "src/assets/robots and coding.png",
+      image: "assets/robots and coding.png",
       alt: "Children building and programming robots",
       link: "/programs#robotics",
     },
@@ -54,7 +54,7 @@ const HomePage = () => {
       title: "Chemistry Lab",
       description:
         "Discover the wonders of chemistry through safe, exciting experiments.",
-      image: "src/assets/chemistryLab.png",
+      image: "assets/chemistryLab.png",
       alt: "Kids conducting chemistry experiments with colorful reactions",
       link: "/programs#chemistry",
     },
@@ -62,7 +62,7 @@ const HomePage = () => {
       title: "Engineering Design",
       description:
         "Design, build, and test structures while learning engineering principles.",
-      image: "src/assets/engineer Design.png",
+      image: "assets/engineer Design.png",
       alt: "Children designing and building engineering structures",
       link: "/programs#engineering",
     },
@@ -108,7 +108,7 @@ const HomePage = () => {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-center bg-cover brightness-80 opacity-90 blur-in-sm "
-          style={{ backgroundImage: "url('src/assets/hero.png')" }}
+          style={{ backgroundImage: "url('assets/hero.png')" }}
         ></div>
 
         {/* Overlay */}
