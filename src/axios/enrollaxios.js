@@ -4,33 +4,62 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 // Enroll | POST
-export const enrollUser = (userObj) => {
-  const response = axios
-    .post(`${API_URL}/features/program/enroll.php`, userObj)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
+export const enrollUser = async (userObj) => {
+  const token = localStorage.getItem("accessToken");
 
-  return response;
+  try {
+    const response = await axios.post(
+      `${API_URL}/features/program/enroll.php`,
+      userObj,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-// Get All Enrolled Users | GET
-export const getAllEnrolledUsers = async (token) => {
-  const response = await axios
-    .get(`${API_URL}/features/program/enroll.php`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
-  return response;
+export const getAllEnrollmentsForUser = async (token, userId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/features/program/enroll.php?user_enrollments=1&user_id=${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching enrollments:", error);
+    throw error;
+  }
 };
 
-//get a enrolled by id
-export const getEnrolledById = async (id) => {
-  const response = await axios
-    .get(`${API_URL}/features/program/enroll.php?id=${id}`)
-    .then((res) => res.data)
-    .catch((error) => console.log(error));
-  return response;
+export const updateEnrollmentStatus = async (
+  token,
+  userId,
+  programId,
+  status
+) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/features/program/enroll.php`,
+      { user_id: userId, program_id: programId, status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating enrollment status:", error);
+    throw error;
+  }
 };

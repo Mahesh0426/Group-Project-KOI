@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   LogOut,
+  NotebookIcon,
 } from "lucide-react";
 import SidebarItem from "../helper/SidebarItem";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,6 +68,14 @@ const AdminLayout = () => {
             icon={<Package />}
             label="Programs"
             path="/admin/programs"
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            onClick={handleSidebarClick}
+          />
+          <SidebarItem
+            icon={<NotebookIcon />}
+            label="Enrollments"
+            path="/admin/enrollments"
             activeItem={activeItem}
             setActiveItem={setActiveItem}
             onClick={handleSidebarClick}

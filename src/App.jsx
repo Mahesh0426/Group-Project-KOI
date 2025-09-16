@@ -21,6 +21,7 @@ import UnauthorizedPage from "./pages/pageNotFound/UnauthorizedPage";
 import RouteGuard from "./components/Protected-Route/RouteGuard";
 import MyProgramPage from "./pages/user/MyProgramPage";
 import MyProfilePage from "./pages/user/MyProfilePage";
+import EnrollmentsPage from "./pages/admin/EnrollmentsPage";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/admin/*" element={<AdminLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="programs" element={<AdminProgramsPage />} />
+          <Route path="enrollments" element={<EnrollmentsPage />} />
           <Route path="create-program" element={<CreateProgramFormPage />} />
           <Route path="edit-program/:id" element={<CreateProgramFormPage />} />
           <Route path="users" element={<UsersPage />} />
