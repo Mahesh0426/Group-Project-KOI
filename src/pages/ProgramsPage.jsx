@@ -28,8 +28,9 @@ const ProgramsPage = () => {
     try {
       const res = await enrollUser({ user_id: userId, program_id: programId });
       if (res.message === "Successfully enrolled in program") {
-        toast.success("Enrolled successfully!");
-        navigate("/my-program");
+        toast.success(
+          "Enrolled successfully, when  admin approve  you will see program !"
+        );
       } else if (res.error) {
         toast.error(res.error);
       }

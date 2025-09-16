@@ -22,6 +22,7 @@ import RouteGuard from "./components/Protected-Route/RouteGuard";
 import MyProgramPage from "./pages/user/MyProgramPage";
 import MyProfilePage from "./pages/user/MyProfilePage";
 import EnrollmentsPage from "./pages/admin/EnrollmentsPage";
+import ChatBotPopup from "./pages/aiChatBot/ChatBotPopup";
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
       </Routes>
 
       <ToastContainer position="top-center" autoClose={2000} />
+      <ChatBotPopup />
     </>
   );
 }
