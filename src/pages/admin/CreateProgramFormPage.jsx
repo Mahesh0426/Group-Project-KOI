@@ -11,6 +11,10 @@ import {
   updateProgramAction,
   getProgramByIdAction,
 } from "../../redux/AdminProgram/adminProgramAction";
+import { Sparkle } from "lucide-react";
+import { generateAIDescription } from "../../services/service";
+import { toast } from "react-toastify";
+import { generateAIlearning_outcomes } from "../../services/service1";
 
 const CreateEditProgramFormPage = () => {
   const navigate = useNavigate();
@@ -32,6 +36,9 @@ const CreateEditProgramFormPage = () => {
     learning_outcomes: "",
     image_filename: null,
   });
+
+  const [loadingDescription, setLoadingDescription] = useState(false);
+  const [loadingLearningOutcomes, setLoadingLearningOutcomes] = useState(false);
 
   // Load program data when in edit mode
   useEffect(() => {
@@ -83,6 +90,42 @@ const CreateEditProgramFormPage = () => {
     }
 
     navigate("/admin/programs");
+  };
+
+  // AI Description Handler
+  const handleAIDescription = async () => {
+    setLoadingDescription(true);
+    try {
+      const aiDesc = await generateAIDescription({
+        title: formData.title,
+        age_group: formData.age_group,
+        duration: formData.duration,
+      });
+      setFormData((prev) => ({ ...prev, description: aiDesc }));
+    } catch (err) {
+      toast.error("Failed to generate AI description");
+      console.error(err);
+    } finally {
+      setLoadingDescription(false);
+    }
+  };
+  // AI Description Handler
+  const handleAIlearning_outcomes = async () => {
+    setLoadingLearningOutcomes(true);
+    try {
+      const aiDesc = await generateAIlearning_outcomes({
+        title: formData.title,
+        age_group: formData.age_group,
+        duration: formData.duration,
+        description: formData.description,
+      });
+      setFormData((prev) => ({ ...prev, learning_outcomes: aiDesc }));
+    } catch (err) {
+      toast.error("Failed to generate AI description");
+      console.error(err);
+    } finally {
+      setLoadingLearningOutcomes(false);
+    }
   };
 
   // Show loading while fetching program data in edit mode
@@ -198,6 +241,22 @@ const CreateEditProgramFormPage = () => {
                 onChange={handleChange}
                 required
               />
+
+              <Button
+                type="button"
+                className="mt-3 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                onClick={handleAIDescription}
+                disabled={loadingDescription}
+              >
+                {loadingDescription ? (
+                  `AI Generating...`
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Sparkle className="h-4 w-4 animate-pulse" />
+                    <span>Auto-Generate Description</span>
+                  </div>
+                )}
+              </Button>
             </div>
 
             {/* What Students Will Learn */}
@@ -216,6 +275,23 @@ const CreateEditProgramFormPage = () => {
                 onChange={handleChange}
                 required
               />
+
+              <Button
+                type="button"
+                className=" mt-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                onClick={handleAIlearning_outcomes}
+                disabled={loadingLearningOutcomes}
+              >
+                {loadingLearningOutcomes ? (
+                  `AI Generating...`
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Sparkle className="h-4 w-4 animate-pulse" />
+                    <span>Auto-Generate learning outcomes</span>
+                  </div>
+                )}
+              </Button>
+
               <p className="text-xs text-gray-500 mt-2">
                 Example: Include an overview and learning outcomes such as:
                 <br />• Basic programming concepts and logic

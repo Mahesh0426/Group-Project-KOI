@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProgramsAction } from "../redux/AdminProgram/adminProgramAction";
 import FeatuesSection from "../components/features/FeatuesSection";
@@ -83,12 +83,7 @@ const ProgramsPage = () => {
                     Schedule:
                   </h3>
                   <p className="mb-6">{p.schedule}</p>
-                  {/* <Button
-                    asChild
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
-                  >
-                    <Link to="/contact">Enroll Now</Link>
-                  </Button> */}
+
                   <Button
                     className="bg-blue-600 ..."
                     onClick={() => handleEnroll(p.id)}
